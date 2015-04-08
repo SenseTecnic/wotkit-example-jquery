@@ -63,9 +63,9 @@ function Sensor(sensorName) {
 
    /**
    * Makes a GET call to the data endpoint of the WoTKit API
-   * @param	callback	Required: A function that will be executed when the API call has completed and Data has been received.
-   * @param 	beforeE 	Optional: The number of elements before the start time. E.g. to get the last 10 use beforeE=10
-   * @return 			The callback function will be executed.
+   * @param	callback: A function that will be executed when completed
+   * @param	beforeE: The number of elements before the query time.
+   * @return	The callback function will be executed.
    **/
    this.getData = function(callBack, beforeE) {
       if (typeof beforeE === "undefined") { 
@@ -83,8 +83,8 @@ function Sensor(sensorName) {
 
    /**
    * Makes a GET call to the fields endpoint of the WoTKit API
-   * @param 	callback	Required: A function that will be executed when the API call has completed and Data has been received.
-   * @return			The callback function will be executed.
+   * @param	callback: A function that will be executed when completed.
+   * @return	The callback function will be executed.
    **/
    this.getFields = function(callBack) {
       $.ajax({
@@ -124,7 +124,7 @@ sensor.getFields( function (fieldsArray) { //Call the WoTKit API
 });
 
 /*
-* The full implementation of the drawMap function is specified in the Google Chart Docs:
+* The full implementation of the drawMap function is specified at:
 * https://developers.google.com/chart/interactive/docs/gallery/map
 */
 function drawMap( sensorLat, sensorLong, sensorName ) {
@@ -155,7 +155,7 @@ A very simple way of visualizing our data is by building a line chart of values 
 ```javascript
 var sensor = new Sensor(sensorName); //Create a new sensor object 
 
-sensor.getData(function (dataArray) { //callback function when data received from API 
+sensor.getData(function (dataArray) { //callback function
    drawLineChart(dataArray);
 }, 10); //Number of previous data points to get
 
@@ -190,7 +190,8 @@ function drawLineChart (dataArray) {
       ]
    }
 
-   var ctx = document.getElementById("chart-line").getContext("2d"); //get the <canvas id="chart-line"></canvas> DOM element
+   //get the <canvas id="chart-line"></canvas> DOM element
+   var ctx = document.getElementById("chart-line").getContext("2d"); 
    if (window.myLine) window.myLine.destroy();
    window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true});
 }
@@ -203,9 +204,9 @@ We can also analyze the data and use our analysis to draw a chart. Let's write a
 ```javascript
 var sensor = new Sensor(sensorName); //Create a new sensor object 
 
-sensor.getData(function (dataArray) { //callback function when data received from API 
-   drawPolarChart(); //Reinitialize in this chart.
-   var occurrences = countDataOccurrences(dataArray); //#times a data value appears in the set
+sensor.getData(function (dataArray) { //callback function
+   drawPolarChart(); //Reinitialize in this chart. 
+   var occurrences = countDataOccurrences(dataArray); 
    for (var i=0; i < occurrences[0].length; i++){ //append each datapoint
       window.myPolarArea.addData({
          value: Math.abs(occurrences[1][i]),
@@ -220,8 +221,9 @@ sensor.getData(function (dataArray) { //callback function when data received fro
 /*Our function to count the # of times a data value appears in the dataset*/
 function countDataOccurrences (dataArray) {
    var a = [], b = [], prev;
-   var tmpArray = dataArray.slice(); //trick to clone the object, otherwise you will sort the original
-   tmpArray.sort(function(a,b) {return a.value - b.value} ); //sort in ascending order
+   //A trick to clone the object, otherwise you will sort the original:
+   var tmpArray = dataArray.slice(); 
+   tmpArray.sort(function(a,b) {return a.value - b.value} ); //sort ascending
 
    for ( var i = 0; i < tmpArray.length; i++ ) {
       if ( tmpArray[i].value !== prev ) {
@@ -240,35 +242,11 @@ function countDataOccurrences (dataArray) {
 *  http://www.chartjs.org/docs/#polar-area-chart
 */
 function drawPolarChart (){
-   var ctx = document.getElementById("chart-polar").getContext("2d"); //get the <canvas id="chart-polar"></canvas> object
+   //get the <canvas id="chart-polar"></canvas> object:
+   var ctx = document.getElementById("chart-polar").getContext("2d"); 
    if (window.myPolarArea) window.myPolarArea.destroy();
    window.myPolarArea = new Chart(ctx).PolarArea( [], {responsive:true});
 };
 ```
-
-
-
-
-
-
-* This is a simple use of the WoTKit API, using JQuery's' AJAX function. We will use this call to call a function updating a list of sensors.
-
-* When an item is clicked we will run the updateCharts() function to initialize our sensor object and get data.
-
-* Finally, we write our functions to draw our charts. Polar, Line, and Google Maps.
-
-(explain how in each one we use utility functions and what they do)
-
-
-
-* Let's put all that together when the document loads.
-
-* As a bonus we will create a simple animation and bind it to all AJAX calls to show that our REST APIs have succedeed.
-
-* 
-
-
-
-
 
 
