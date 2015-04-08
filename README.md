@@ -197,7 +197,7 @@ function drawLineChart (dataArray) {
 }
 ```
 
-* Drawing data after analyzing it, e.g. a polar chart.
+#### Drawing data after analyzing it, e.g. a polar chart.
 
 We can also analyze the data and use our analysis to draw a chart. Let's write a function to count the number of times (occurrences) that a data value appears in the sensor data array received from the API. As a bonus let's learn how to append data to an existent ChartJS
 
