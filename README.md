@@ -148,7 +148,7 @@ function drawMap( sensorLat, sensorLong, sensorName ) {
 The WoTKit allows you to retrieve raw data of a sensor via the data endpoint (http://wotkit.readthedocs.org/en/1.9.0/api_v1/api_sensor_data.html#raw-data-retrieval). Let's use this data to build three charts: A simple line chart using ChartJS, and a polar chart after analyzing the raw data using ChartJS.
 
 
-* Drawing data directly.
+#### Drawing data directly.
 
 A very simple way of visualizing our data is by building a line chart of values returned.
 
