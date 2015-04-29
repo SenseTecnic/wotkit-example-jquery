@@ -342,6 +342,9 @@ window.onload = function(){
         loaderAnimation ();
     });
 
+    $('.form-control#search-text').popover("show");
+
+
 };
 
 
