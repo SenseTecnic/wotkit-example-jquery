@@ -4,6 +4,8 @@ WoTKit Example using JQuery
 
 This application exemplifies using the WoTKit to search and access public sensors. We use public data to build a simple dashboard.
 
+![alt](https://raw.githubusercontent.com/SenseTecnic/wotkit-example-jquery/master/screenshot.png)
+
 Dependencies
 ============
 
@@ -68,14 +70,14 @@ function Sensor(sensorName) {
    * @return	The callback function will be executed.
    **/
    this.getData = function(callBack, beforeE) {
-      if (typeof beforeE === "undefined") { 
+      if (typeof beforeE === "undefined") {
          beforeE = "10";
-      } 
+      }
       $.ajax({
          type:"GET",
          url:WOTKIT_URL+'/sensors/'+encodeURIComponent(sensorName)+'/data?beforeE='+ beforeE,
-         success: function(data){ 
-            dataArray = data; //do some processing if needed here 
+         success: function(data){
+            dataArray = data; //do some processing if needed here
             callBack(dataArray);
          }
       });
@@ -90,7 +92,7 @@ function Sensor(sensorName) {
       $.ajax({
          type:"GET",
          url:WOTKIT_URL+'/sensors/'+encodeURIComponent(sensorName)+'/fields',
-         success: function(data){ 
+         success: function(data){
             fieldsArray = data; //do some processing with array if needed here
             callBack(fieldsArray);
          }
@@ -107,13 +109,13 @@ sensor.getFields(function(data){/*Your code*/})
 ```
 ### Using Sensor Fields
 
-WoTKit sensor fields have meta-information regarding the sensor, like the sensor's position (Long, Lat), and name (http://wotkit.readthedocs.org/en/1.9.0/api_v1/api_sensor_fields.html). 
+WoTKit sensor fields have meta-information regarding the sensor, like the sensor's position (Long, Lat), and name (http://wotkit.readthedocs.org/en/1.9.0/api_v1/api_sensor_fields.html).
 
 Let's then use this information to create a Google Chart Map to visualize the position of our sensor (https://developers.google.com/chart/interactive/docs/gallery/map)
 
 
 ```javascript
-var sensor = new Sensor(sensorName); //Create a new sensor object 
+var sensor = new Sensor(sensorName); //Create a new sensor object
 sensor.getFields( function (fieldsArray) { //Call the WoTKit API
    //Let's create a hash-type object to easily search for fields.
    var fieldsArrayHash = {};
@@ -153,7 +155,7 @@ The WoTKit allows you to retrieve raw data of a sensor via the data endpoint (ht
 A very simple way of visualizing our data is by building a line chart of values returned.
 
 ```javascript
-var sensor = new Sensor(sensorName); //Create a new sensor object 
+var sensor = new Sensor(sensorName); //Create a new sensor object
 
 sensor.getData(function (dataArray) { //callback function
    drawLineChart(dataArray);
@@ -191,7 +193,7 @@ function drawLineChart (dataArray) {
    }
 
    //get the <canvas id="chart-line"></canvas> DOM element
-   var ctx = document.getElementById("chart-line").getContext("2d"); 
+   var ctx = document.getElementById("chart-line").getContext("2d");
    if (window.myLine) window.myLine.destroy();
    window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true});
 }
@@ -202,11 +204,11 @@ function drawLineChart (dataArray) {
 We can also analyze the data and use our analysis to draw a chart. Let's write a function to count the number of times (occurrences) that a data value appears in the sensor data array received from the API. As a bonus let's learn how to append data to an existent ChartJS
 
 ```javascript
-var sensor = new Sensor(sensorName); //Create a new sensor object 
+var sensor = new Sensor(sensorName); //Create a new sensor object
 
 sensor.getData(function (dataArray) { //callback function
-   drawPolarChart(); //Reinitialize in this chart. 
-   var occurrences = countDataOccurrences(dataArray); 
+   drawPolarChart(); //Reinitialize in this chart.
+   var occurrences = countDataOccurrences(dataArray);
    for (var i=0; i < occurrences[0].length; i++){ //append each datapoint
       window.myPolarArea.addData({
          value: Math.abs(occurrences[1][i]),
@@ -222,7 +224,7 @@ sensor.getData(function (dataArray) { //callback function
 function countDataOccurrences (dataArray) {
    var a = [], b = [], prev;
    //A trick to clone the object, otherwise you will sort the original:
-   var tmpArray = dataArray.slice(); 
+   var tmpArray = dataArray.slice();
    tmpArray.sort(function(a,b) {return a.value - b.value} ); //sort ascending
 
    for ( var i = 0; i < tmpArray.length; i++ ) {
@@ -238,15 +240,13 @@ function countDataOccurrences (dataArray) {
 }
 
 
-/* Draw the polar chart 
+/* Draw the polar chart
 *  http://www.chartjs.org/docs/#polar-area-chart
 */
 function drawPolarChart (){
    //get the <canvas id="chart-polar"></canvas> object:
-   var ctx = document.getElementById("chart-polar").getContext("2d"); 
+   var ctx = document.getElementById("chart-polar").getContext("2d");
    if (window.myPolarArea) window.myPolarArea.destroy();
    window.myPolarArea = new Chart(ctx).PolarArea( [], {responsive:true});
 };
 ```
-
-
