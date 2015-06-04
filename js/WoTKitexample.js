@@ -2,7 +2,6 @@
 
 /*Sensor Object to encapsulate calls related to a particular sensor*/
 function Sensor(sensorName) {
-
     var WOTKIT_URL = "http://wotkit.sensetecnic.com/api/v1";
 
     /**
@@ -12,18 +11,18 @@ function Sensor(sensorName) {
     * @return 			The callback function will be executed.
     **/
     this.getData = function(callBack, beforeE) {
-       if (typeof beforeE === "undefined") { 
+       if (typeof beforeE === "undefined") {
            beforeE = "10";
-       } 
+       }
        $.ajax({
               type:"GET",
               url:WOTKIT_URL+'/sensors/'+encodeURIComponent(sensorName)+'/data?beforeE='+ beforeE,
-              success: function(data){ 
-                  dataArray = data; //do some processing if needed here 
+              success: function(data){
+                  dataArray = data; //do some processing if needed here
                   callBack(dataArray);
               }
         });
-    }
+    };
 
     /**
     * Makes a GET call to the fields endpoint of the WoTKit API
@@ -34,26 +33,26 @@ function Sensor(sensorName) {
        $.ajax({
               type:"GET",
               url:WOTKIT_URL+'/sensors/'+encodeURIComponent(sensorName)+'/fields',
-              success: function(data){ 
+              success: function(data){
                   fieldsArray = data; //do some processing with array if needed here
                   callBack(fieldsArray);
               }
         });
-    }
+    };
 }
 
 /**
 * An simple AJAX call to the WoTKit API. It will take a search HTML form object and make a call to the sensors endpoint of the WoTKit API
 * @param	searchText	A string to search, often from a text box.
 * @param	callBack	A function that will be called with the data (a sensor list) when API call has completed.
-* @return 	
+* @return
 **/
 function searchSensors (searchText, callBack) {
     var WOTKIT_URL = "http://wotkit.sensetecnic.com/api/v1";
     $.ajax({
             type:"GET",
             url:WOTKIT_URL+'/sensors?text='+encodeURIComponent(searchText),
-            success: function(data){callBack(data)}
+            success: function(data){callBack(data);}
     });
 }
 
@@ -82,15 +81,15 @@ function updateSensorList(sensorList) {
 **/
 
 function updateCharts(sensorName){
-    var sensor = new Sensor(sensorName);        
+    var sensor = new Sensor(sensorName);
 
-    /* You can use a sensor's fields to create charts. For example using Latitude and Longitude*/    
+    /* You can use a sensor's fields to create charts. For example using Latitude and Longitude*/
     sensor.getFields( function (fieldsArray) {
 
         /*Google Charts Map*/
         var fieldsArrayHash = {};
         //Let's create a hash-type object to easily search for fields.
-        for (var i=0; i<fieldsArray.length; i++ ) {  
+        for (var i=0; i<fieldsArray.length; i++ ) {
             fieldsArrayHash[fieldsArray[i].name] = fieldsArray[i].value;
         }
         drawMap(fieldsArrayHash["lat"], fieldsArrayHash["lng"], 'Sensor');
@@ -99,7 +98,7 @@ function updateCharts(sensorName){
 
 
     /*You can use sensor data to draw different types of charts*/
-    sensor.getData(function (dataArray) { //callback function when data received from API 
+    sensor.getData(function (dataArray) { //callback function when data received from API
 
         /*ChartJS Line Chart*/
         drawLineChart(dataArray);
@@ -118,16 +117,16 @@ function updateCharts(sensorName){
         window.myPolarArea.update();
 
         /*Google Charts Trendline Chart*/
-        drawTrendlineChart(dataArray);        
+        drawTrendlineChart(dataArray);
 
         /*HTML Table */
-        drawTable(dataArray)           
-                                        
+        drawTable(dataArray);
+
     }, 10); //Number of previous data points to get
 }
 
 /* ChartJS Charts */
- 
+
 /**
 * Draw a ChartJS line chart using sensor data
 * @param	dataArray	A data array as returned by the WoTKit API: [{"id":1, "value":1, ... }, ... ]
@@ -136,15 +135,15 @@ function drawPolarChart (){
     var ctx = document.getElementById("chart-polar").getContext("2d");
     if (window.myPolarArea) window.myPolarArea.destroy();
     window.myPolarArea = new Chart(ctx).PolarArea( [], {responsive:true});
-    $("#chart-polar").click( 
+    $("#chart-polar").click(
                  function(evt){ //An example of binding click events to parts of a chart in ChartJS.
                         var activePoints = myPolarArea.getSegmentsAtEvent(evt);
                         var alertText = "label=" + activePoints[0].label + ", value=" + activePoints[0].value;
                         console.log(alertText);
                  }
-     );     
-};
- 
+     );
+}
+
 
 /**
 * Draw a ChartJS line chart using sensor data
@@ -174,7 +173,7 @@ function drawLineChart (dataArray) {
                 data : lineDataArray
             }
         ]
-    }
+    };
 
     var ctx = document.getElementById("chart-line").getContext("2d");
     if (window.myLine) window.myLine.destroy();
@@ -208,7 +207,7 @@ function drawMap( sensorLat, sensorLong, sensorName ) {
     };
     var map = new google.visualization.Map(document.getElementById('chart-map'));
     map.draw(data, options);
-};
+}
 
 /**
 * Draw a Google Trendline Chart using sensor data
@@ -252,7 +251,7 @@ function drawTrendlineChart(dataArray) {
 * @param	dataArray	A data array as returned by the WoTKit API: [{"id":1, "value":1, ... }, ... ]
 **/
 function drawTable (dataArray) {
-    $('#data-table tbody').empty();     
+    $('#data-table tbody').empty();
     for (var i=0; i<dataArray.length; i++) {
         $('#data-table tbody').append ('<tr><td>'+dataArray[i].id+
                                        '</td> <td>'+dataArray[i].timestamp_iso+
@@ -285,7 +284,7 @@ function getRandomColor() {
 function countDataOccurrences (dataArray) {
     var a = [], b = [], prev;
     var tmpArray = dataArray.slice(); //a trick to clone the object, otherwise you will sort the original dataArray
-    tmpArray.sort(function(a,b) {return a.value - b.value} ); //sort in ascending order
+    tmpArray.sort(function(a,b) {return a.value - b.value;} ); //sort in ascending order
 
     for ( var i = 0; i < tmpArray.length; i++ ) {
         if ( tmpArray[i].value !== prev ) {
@@ -305,7 +304,7 @@ function countDataOccurrences (dataArray) {
 function loaderAnimation () {
     $('#loader-bar').animate({
                               width:"100%"
-                             }, 500, function() { 
+                             }, 500, function() {
                                  $(this).css({"width":"0%"});
                              } );
 }
@@ -315,7 +314,7 @@ function loaderAnimation () {
 
 /**
 *  Load Google Chart library and setup listeners after page is reloaded
-**/ 
+**/
 
 // Google Charts will re-write the document element, thus it needs to be called before
 google.load('visualization', '1', { 'packages': ['map', 'corechart'] });
@@ -323,7 +322,7 @@ google.load('visualization', '1', { 'packages': ['map', 'corechart'] });
 window.onload = function(){
 
     /*Draw ChartJS Charts*/
-    drawPolarChart();            
+    drawPolarChart();
     drawLineChart({"value":1});
 
     /*Draw Google Charts*/
@@ -333,8 +332,8 @@ window.onload = function(){
     /*JQuery AJAX Listners*/
     $('#search-form').submit(function(){
         var searchText = $(this).find('input:text').val();
-        searchSensors(searchText, updateSensorList);       
-        $(this).find('input:text').val("") //update as cleaned
+        searchSensors(searchText, updateSensorList);
+        $(this).find('input:text').val(""); //update as cleaned
     });
 
     /*Attach a nice loader animation to all AJAX requests.*/
@@ -346,9 +345,3 @@ window.onload = function(){
 
 
 };
-
-
-
-
-
-
